@@ -1,35 +1,142 @@
 {
-  "ignorePatterns": ["!**/*"],
+  "ignorePatterns": [
+    "!**/*"
+  ],
   "overrides": [
     {
-      "files": ["*.ts", "*.tsx"],
+      "files": [
+        "*.ts",
+        "*.tsx"
+      ],
       "rules": {}
     },
     {
-      "files": ["*.js", "*.jsx"],
+      "files": [
+        "*.js",
+        "*.jsx"
+      ],
       "rules": {}
     },
     {
-      "files": ["*.spec.ts", "*.spec.tsx", "*.spec.js", "*.spec.jsx"],
+      "files": [
+        "*.ts",
+        "*.tsx",
+        "*.js",
+        "*.jsx"
+      ],
+      "plugins": [
+        "unused-imports",
+        "import",
+        "simple-import-sort"
+      ],
+      "rules": {
+        "eqeqeq": [
+          "error",
+          "always",
+          {
+            "null": "never"
+          }
+        ],
+        "complexity": "error",
+        "max-depth": "error",
+        "max-lines": "error",
+        "max-lines-per-function": "error",
+        "max-nested-callbacks": [
+          "error",
+          {
+            "max": 3
+          }
+        ],
+        "max-params": [
+          "error",
+          10
+        ],
+        "no-console": [
+          "error",
+          {
+            "allow": [
+              "error",
+              "warn",
+              "info",
+              "table"
+            ]
+          }
+        ],
+        "no-duplicate-imports": "error",
+        "no-empty": "error",
+        "no-fallthrough": "error",
+        "no-param-reassign": "error",
+        "no-unreachable": "error",
+        "no-unreachable-loop": "error",
+        "no-unused-vars": "off",
+        "no-var": "error",
+        "prefer-const": "error",
+        "simple-import-sort/imports": [
+          "error",
+          {
+            "groups": [
+              [
+                "^\\u0000"
+              ],
+              [
+                "^@?\\w"
+              ],
+              [
+                "^"
+              ],
+              [
+                "^\\."
+              ]
+            ]
+          }
+        ],
+        "simple-import-sort/exports": "error"
+      }
+    },
+    {
+      "files": [
+        "*.spec.ts",
+        "*.spec.tsx",
+        "*.spec.js",
+        "*.spec.jsx"
+      ],
       "env": {
         "jest": true
       },
       "rules": {}
     },
     {
-      "files": ["*.json"],
+      "files": [
+        "*.json"
+      ],
       "parser": "jsonc-eslint-parser",
       "rules": {
-        "@nx/dependency-checks": "error"
+        "@nx/dependency-checks": [
+          "error",
+          {
+            "buildTargets": [
+              "build"
+            ],
+            "checkMissingDependencies": true,
+            "checkObsoleteDependencies": true,
+            "checkVersionMismatches": true,
+            "includeTransitiveDependencies": true,
+            "ignoredDependencies": []
+          }
+        ]
       }
     },
     {
-      "files": ["./package.json"],
+      "files": [
+        "./package.json"
+      ],
       "parser": "jsonc-eslint-parser",
       "rules": {
         "@nx/nx-plugin-checks": "error"
       }
     }
   ],
-  "extends": ["./.eslintrc.base.json"]
+  "extends": [
+    "./.eslintrc.base.json"
+  ]
 }
