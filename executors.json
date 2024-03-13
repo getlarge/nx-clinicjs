@@ -1,0 +1,9 @@
+{
+  "executors": {
+    "bubbleprof": {
+      "implementation": "./src/executors/bubbleprof/executor",
+      "schema": "./src/executors/bubbleprof/schema.json",
+      "description": "clinicjs bubbleprof executor"
+    }
+  }
+}

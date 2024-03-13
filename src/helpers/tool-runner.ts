@@ -8,6 +8,7 @@ import { access, appendFile } from 'node:fs/promises';
 import { setTimeout } from 'node:timers/promises';
 import { pathToFileURL } from 'node:url';
 import { promisify } from 'node:util';
+import type { Options as OraOptions } from 'ora';
 
 import { replace as envString } from './envsubst';
 
@@ -66,6 +67,27 @@ interface ITool extends EventEmitter {
 
 type Tool = new (options: ToolOptions) => ITool;
 
+async function openUrl(target: string, options: { wait: boolean }) {
+  const open = Function('return import("open")')() as Promise<
+    typeof import('open')
+  >;
+  return (await open).default(target, options);
+}
+
+async function spinnerFactory(options: OraOptions = {}) {
+  // https://github.com/microsoft/TypeScript/issues/43329
+  const ora = Function('return import("ora")')() as Promise<
+    typeof import('ora')
+  >;
+  // const ora =  import('ora');
+  return (await ora).default({
+    text: '',
+    spinner: 'simpleDots',
+    ...options,
+  });
+}
+
+// eslint-disable-next-line max-lines-per-function
 export async function runTool(
   toolName: string,
   Tool: Tool,
@@ -100,19 +122,11 @@ export async function runTool(
   const stopDelayMs = parseInt(stopDelay ?? '2000', 10);
   const spinnerIsEnabled = process.stdout.isTTY && !process.env.CI;
   const spinnerStream = process.stderr;
-  // https://github.com/microsoft/TypeScript/issues/43329
-  const ora = Function('return import("ora")')() as Promise<
-    typeof import('ora')
-  >;
-  // const ora =  import('ora');
-  const spinner = (await ora).default({
-    text: '',
-    color: uiOptions.color,
-    stream: spinnerStream,
-    spinner: 'simpleDots',
+  const spinner = await spinnerFactory({
     isEnabled: spinnerIsEnabled,
+    stream: spinnerStream,
+    color: uiOptions.color,
   });
-  spinner.start();
 
   function status(message: string) {
     if (spinnerIsEnabled) {
@@ -126,11 +140,6 @@ export async function runTool(
     status('Received Ctrl+C, closing process...');
     if (!spinner.isSpinning) spinner.start();
   }
-
-  const open = Function('return import("open")')() as Promise<
-    typeof import('open')
-  >;
-  const openUrl = (await open).default;
 
   const tool = new Tool({
     sampleInterval: parseInt(sampleInterval ?? '250', 10),
@@ -213,10 +222,14 @@ export async function runTool(
         err?.['code'] === 'ENOENT' &&
         err?.message.includes('processstat')
       ) {
+        spinner.fail(
+          'Process forcefully closed before processstat file generation'
+        );
         throw new Error(
           'Process forcefully closed before processstat file generation'
         );
       }
+      spinner.fail('Error generating HTML file');
       throw err;
     });
     if (openLocalFile) {
@@ -233,9 +246,11 @@ export async function runTool(
   }
 
   if (!collectOnly) {
-    logger.log(`Generated HTML file is ${pathToFileURL(filename + '.html')}`);
+    spinner.succeed(
+      `Generated HTML file is ${pathToFileURL(filename + '.html')}`
+    );
   } else {
-    logger.log(`Output file is ${filename}`);
+    spinner.succeed(`Output file is ${filename}`);
   }
 }
 
