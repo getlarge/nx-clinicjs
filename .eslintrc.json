@@ -121,7 +121,11 @@
             "checkObsoleteDependencies": true,
             "checkVersionMismatches": true,
             "includeTransitiveDependencies": true,
-            "ignoredDependencies": []
+            "ignoredDependencies": [
+              "@nx/js",
+              "@nx/jest",
+              "nx"
+            ]
           }
         ]
       }

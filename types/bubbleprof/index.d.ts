@@ -1,7 +1,7 @@
 declare module '@clinic/bubbleprof' {
-  import { EventEmitter } from 'events';
+  import type { EventEmitter } from 'node:events';
 
-  export interface ClinicBubbleprofOptions {
+  interface ClinicBubbleprofOptions {
     detectPort?: boolean;
     debug?: boolean;
     dest?: string;
@@ -22,5 +22,4 @@ declare module '@clinic/bubbleprof' {
   }
   // because => https://www.typescriptlang.org/docs/handbook/declaration-files/templates/module-d-ts.html
   export = ClinicBubbleprof;
-  export default ClinicBubbleprof;
 }
