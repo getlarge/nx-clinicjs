@@ -2,9 +2,17 @@
   "name": "nx-clinicjs",
   "version": "0.0.1",
   "license": "MIT",
+  "executors": "./executors.json",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/getlarge/nx-clinicjs.git",
+    "directory": "packages/web"
+  },
   "scripts": {},
   "dependencies": {
     "@nx/devkit": "18.0.8",
+    "open": "^10.1.0",
+    "ora": "^8.0.1",
     "tslib": "^2.3.0"
   },
   "devDependencies": {
@@ -12,6 +20,7 @@
     "@nx/eslint-plugin": "18.0.8",
     "@nx/jest": "18.0.8",
     "@nx/js": "18.0.8",
+    "@nx/plugin": "18.0.8",
     "@nx/workspace": "18.0.8",
     "@swc-node/register": "~1.8.0",
     "@swc/cli": "~0.1.62",
@@ -30,8 +39,7 @@
     "ts-jest": "^29.1.0",
     "ts-node": "10.9.1",
     "typescript": "~5.3.2",
-    "verdaccio": "^5.0.4",
-    "@nx/plugin": "18.0.8"
+    "verdaccio": "^5.0.4"
   },
   "type": "commonjs",
   "main": "./src/index.js",
