@@ -10,7 +10,7 @@ describe('nx-clinicjs', () => {
 
     // The plugin has been built and published to a local registry in the jest globalSetup
     // Install the plugin built with the latest source code into the test repo
-    execSync(`npm install nx-clinicjs@e2e`, {
+    execSync(`npm install @getlarge/nx-clinicjs@e2e`, {
       cwd: projectDirectory,
       stdio: 'inherit',
       env: process.env,
@@ -27,7 +27,7 @@ describe('nx-clinicjs', () => {
 
   it('should be installed', () => {
     // npm ls will fail if the package is not installed properly
-    execSync('npm ls nx-clinicjs', {
+    execSync('npm ls @getlarge/nx-clinicjs', {
       cwd: projectDirectory,
       stdio: 'inherit',
     });
