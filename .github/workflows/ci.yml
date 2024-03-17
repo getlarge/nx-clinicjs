@@ -27,8 +27,12 @@ jobs:
         with:
           node-version: 20
           cache: 'npm'
+
       - run: npm ci
       - uses: nrwl/nx-set-shas@v4
 
       - run: npx nx-cloud record -- nx format:check
+
       - run: npx nx affected -t lint test build
+        env:
+          NODE_OPTIONS: '${{ env.NODE_OPTIONS }} --experimental-vm-modules'
