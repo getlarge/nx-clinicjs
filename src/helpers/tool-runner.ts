@@ -12,7 +12,7 @@ import type { Options as OraOptions } from 'ora';
 
 import { replace as envString } from './envsubst';
 
-interface ToolOptions {
+export interface ToolOptions {
   sampleInterval?: number;
   detectPort?: boolean;
   dest?: string;
@@ -21,7 +21,7 @@ interface ToolOptions {
   name?: string;
 }
 
-type Args = {
+export type Args = {
   collectOnly?: boolean;
   dest?: string;
   debug?: boolean;
@@ -36,7 +36,7 @@ type Args = {
   command: string[];
 };
 
-type Color =
+export type Color =
   | 'black'
   | 'red'
   | 'green'
@@ -47,11 +47,11 @@ type Color =
   | 'white'
   | 'gray';
 
-type UiOptions = {
+export type UiOptions = {
   color?: Color;
 };
 
-interface ITool extends EventEmitter {
+export interface ITool extends EventEmitter {
   // eslint-disable-next-line @typescript-eslint/no-misused-new
   // new(options?: ToolOptions): ITool;
   collect(
@@ -65,7 +65,7 @@ interface ITool extends EventEmitter {
   ): void;
 }
 
-type Tool = new (options: ToolOptions) => ITool;
+export type Tool = new (options: ToolOptions) => ITool;
 
 async function openUrl(target: string, options: { wait: boolean }) {
   const open = Function('return import("open")')() as Promise<

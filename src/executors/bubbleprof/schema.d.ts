@@ -1,5 +1,5 @@
 export interface BubbleprofExecutorSchema {
-  buildTarget?: string;
+  buildTarget: string;
   detectPort?: boolean;
   /** If set to true, the generated html will not be minified. Default: false */
   debug?: boolean;
