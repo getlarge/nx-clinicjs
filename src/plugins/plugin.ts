@@ -119,6 +119,7 @@ export const createNodes: CreateNodes<Partial<ClinicJsPluginOptions>> = [
     return {
       projects: {
         [projectRoot]: {
+          root: projectRoot,
           targets,
         },
       },
@@ -164,7 +165,7 @@ function getBubbleprofTargetConfiguration(
   const defaultDest = isRootProject ? '.clinic/.' : `.clinic/${projectRoot}/.`;
   return {
     ...baseConfig,
-    executor: '@clinic-nestjs/nx-clinic-js:bubbleprof',
+    executor: '@getlarge/nx-clinicjs:bubbleprof',
     outputs: ['{options.dest}'],
     options: {
       dest: defaultDest,
