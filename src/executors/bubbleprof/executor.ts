@@ -22,12 +22,9 @@ export default async function bubbleProf(
   if (!context.projectName) {
     throw new Error('No project name');
   }
-  const project = context.projectGraph?.nodes[context.projectName];
-  const buildTarget = parseTargetString(
-    options.buildTarget ?? 'build',
-    context
-  );
-  if (!project?.data.targets?.[buildTarget.target]) {
+  const projectNode = context.projectGraph?.nodes[context.projectName];
+  const buildTarget = parseTargetString(options.buildTarget, context);
+  if (!projectNode?.data.targets?.[buildTarget.target]) {
     throw new Error(
       `Cannot find build target ${options.buildTarget} for project ${context.projectName}`
     );
@@ -37,15 +34,14 @@ export default async function bubbleProf(
     context
   );
   const buildTargetExecutor =
-    project.data.targets[buildTarget.target]?.executor;
+    projectNode.data.targets[buildTarget.target]?.executor;
 
   const fileToRun = getFileToRun(
     context,
-    project,
+    projectNode,
     buildOptions,
     buildTargetExecutor
   );
-  // TODO: check if build output exists
 
   await runTool(
     'bubbleprof',
