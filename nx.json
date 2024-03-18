@@ -14,6 +14,23 @@
     ],
     "sharedGlobals": []
   },
+  "release": {
+    "projects": ["nx-clinicjs"],
+    "changelog": {
+      "workspaceChangelog": {
+        "createRelease": "github"
+      }
+    },
+    "version": {
+      "conventionalCommits": true
+    },
+    "git": {
+      "commit": true,
+      "push": true,
+      "pushRemote": "origin",
+      "tag": true
+    }
+  },
   "targetDefaults": {
     "@nx/js:tsc": {
       "cache": true,
@@ -41,6 +58,14 @@
           "codeCoverage": true
         }
       }
+    },
+    "nx-release-publish": {
+      "executor": "@nx/js:release-publish",
+      "options": {
+        "packageRoot": "dist/{projectName}",
+        "registry": "https://registry.npmjs.org/"
+      },
+      "dependsOn": ["build"]
     }
   },
   "nxCloudAccessToken": "MDQwZDI2YzEtYWRmOS00NjIwLWIyMGItNDlmMThhZTBiODFhfHJlYWQtd3JpdGU="
