@@ -14,6 +14,11 @@
       "implementation": "./src/executors/flame/executor",
       "schema": "./src/executors/flame/schema.json",
       "description": "clinicjs flame executor"
+    },
+    "heap-profiler": {
+      "implementation": "./src/executors/heap-profiler/executor",
+      "schema": "./src/executors/heap-profiler/schema.json",
+      "description": "clinicjs heap-profiler executor"
     }
   }
 }

@@ -10,11 +10,6 @@
       "description": "The project's build target to run bubbleprof on",
       "default": "build"
     },
-    "detectPort": {
-      "type": "boolean",
-      "description": "If set to true, the executor will try to detect the port of the running server",
-      "default": false
-    },
     "debug": {
       "type": "boolean",
       "description": "If set to true, the generated html will not be minified",
@@ -25,9 +20,19 @@
       "description": "The folder where the collected data is stored",
       "default": "."
     },
+    "detectPort": {
+      "type": "boolean",
+      "description": "If set to true, the executor will try to detect the port of the running server",
+      "default": false
+    },
     "name": {
       "type": "string",
       "description": "The name to identify the collected data"
+    },
+    "open": {
+      "type": "boolean",
+      "description": "If set to true, the generated html will be opened in the default browser",
+      "default": true
     },
     "visualizeOnly": {
       "type": "string",

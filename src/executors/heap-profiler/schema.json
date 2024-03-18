@@ -1,13 +1,13 @@
 {
   "$schema": "https://json-schema.org/schema",
   "version": 2,
-  "title": "Doctor executor",
-  "description": "Wrapper for the Clinic js Doctor tool",
+  "title": "HeapProfiler executor",
+  "description": "Wrapper for the Clinic js HeapProfiler tool",
   "type": "object",
   "properties": {
     "buildTarget": {
       "type": "string",
-      "description": "The project's build target to run bubbleprof on",
+      "description": "The project's build target to run heap profiler on",
       "default": "build"
     },
     "debug": {
@@ -38,15 +38,10 @@
       "type": "string",
       "description": "Path of the report to visualize"
     },
-    "collectDelay": {
-      "type": "number",
-      "description": "The time in ms to wait before starting to collect data",
-      "default": 0
-    },
-    "sampleInterval": {
-      "type": "number",
-      "description": "The time in ms between each sample",
-      "default": 10
+    "collectOnFailure": {
+      "type": "boolean",
+      "description": "Whether the report should be generated on error",
+      "default": false
     }
   },
   "required": ["buildTarget"]
