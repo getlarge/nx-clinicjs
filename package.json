@@ -3,7 +3,9 @@
   "version": "0.1.0",
   "license": "MIT",
   "executors": "./executors.json",
-  "access": "public",
+  "publishConfig": {
+    "access": "public"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/getlarge/nx-clinicjs.git"
