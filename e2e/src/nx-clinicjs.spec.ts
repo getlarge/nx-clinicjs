@@ -40,16 +40,27 @@ describe('nx-clinicjs', () => {
     });
   });
 
-  it('should include the bubbleprof target in the project graph', () => {
+  it('should include all clinicjs targets in the project graph', () => {
     const result = execSync(`npx nx show project ${testApp} --json`, {
       cwd: projectDirectory,
       env: process.env,
       encoding: 'utf-8',
     });
     const project: ProjectConfiguration = JSON.parse(result);
-    expect(Object.keys(project.targets)).toContain('bubbleprof');
+    const targets = Object.keys(project.targets);
+    expect(targets).toContain('bubbleprof');
+    expect(targets).toContain('doctor');
+    expect(targets).toContain('flame');
+    expect(targets).toContain('heap-profiler');
     expect(project.targets.bubbleprof.executor).toBe(
       '@getlarge/nx-clinicjs:bubbleprof'
+    );
+    expect(project.targets.doctor.executor).toBe(
+      '@getlarge/nx-clinicjs:doctor'
+    );
+    expect(project.targets.flame.executor).toBe('@getlarge/nx-clinicjs:flame');
+    expect(project.targets['heap-profiler'].executor).toBe(
+      '@getlarge/nx-clinicjs:heap-profiler'
     );
   });
 
@@ -83,6 +94,11 @@ function createTestProject() {
     }
   );
   console.log(`Created test project in "${projectDirectory}"`);
+  execSync(`npx nx add @nx/node`, {
+    cwd: projectDirectory,
+    stdio: 'inherit',
+    env: process.env,
+  });
 
   // create app
   execSync(
@@ -114,7 +130,7 @@ function addPlugin(projectDirectory: string) {
       doctorTargetName: 'doctor',
       flameTargetName: 'flame',
       bubbleprofTargetName: 'bubbleprof',
-      heapTargetName: 'heap',
+      heapProfilerTargetName: 'heap-profiler',
     },
   });
   writeFileSync(nxJsonPath, JSON.stringify(nxJson, null, 2));
