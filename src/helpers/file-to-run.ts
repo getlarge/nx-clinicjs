@@ -1,7 +1,39 @@
-import { ExecutorContext, logger, ProjectGraphProjectNode } from '@nx/devkit';
+import {
+  ExecutorContext,
+  logger,
+  parseTargetString,
+  ProjectGraphProjectNode,
+  readTargetOptions,
+} from '@nx/devkit';
 import * as path from 'node:path';
 import { fileExists } from 'nx/src/utils/fileutils';
 import { normalizePath } from 'nx/src/utils/path';
+
+import { BaseExecutorSchema } from '../types/schema';
+
+export function fileToRunCorrectPath(fileToRun: string): string {
+  if (fileExists(fileToRun)) return fileToRun;
+
+  const extensionsToTry = ['.cjs', '.mjs', 'cjs.js', '.esm.js'];
+
+  for (const ext of extensionsToTry) {
+    const file = fileToRun.replace(/\.js$/, ext);
+    if (fileExists(file)) return file;
+  }
+
+  throw new Error(
+    `Could not find ${fileToRun}. Make sure your build succeeded.`
+  );
+}
+
+export function getRelativeDirectoryToProjectRoot(
+  file: string,
+  projectRoot: string
+): string {
+  const dir = path.dirname(file);
+  const relativeDir = normalizePath(path.relative(projectRoot, dir));
+  return relativeDir === '' ? `./` : `./${relativeDir}/`;
+}
 
 export function getFileToRun(
   context: ExecutorContext,
@@ -42,26 +74,26 @@ export function getFileToRun(
   return path.join(context.root, buildOptions.outputPath, outputFileName);
 }
 
-export function fileToRunCorrectPath(fileToRun: string): string {
-  if (fileExists(fileToRun)) return fileToRun;
-
-  const extensionsToTry = ['.cjs', '.mjs', 'cjs.js', '.esm.js'];
-
-  for (const ext of extensionsToTry) {
-    const file = fileToRun.replace(/\.js$/, ext);
-    if (fileExists(file)) return file;
-  }
-
-  throw new Error(
-    `Could not find ${fileToRun}. Make sure your build succeeded.`
-  );
-}
-
-export function getRelativeDirectoryToProjectRoot(
-  file: string,
-  projectRoot: string
+export function retrieveFileToRunFromContext(
+  context: ExecutorContext,
+  options: BaseExecutorSchema
 ): string {
-  const dir = path.dirname(file);
-  const relativeDir = normalizePath(path.relative(projectRoot, dir));
-  return relativeDir === '' ? `./` : `./${relativeDir}/`;
+  if (!context.projectName) {
+    throw new Error('Project name is not set in context');
+  }
+  const projectNode = context.projectGraph?.nodes[context.projectName];
+  const buildTarget = parseTargetString(options.buildTarget, context);
+  if (!projectNode?.data.targets?.[buildTarget.target]) {
+    throw new Error(
+      `Cannot find build target ${options.buildTarget} for project ${context.projectName}`
+    );
+  }
+  const buildOptions: Record<string, unknown> = readTargetOptions(
+    buildTarget,
+    context
+  );
+  const buildTargetExecutor =
+    projectNode.data.targets[buildTarget.target]?.executor;
+
+  return getFileToRun(context, projectNode, buildOptions, buildTargetExecutor);
 }

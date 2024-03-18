@@ -2,7 +2,8 @@ import { logger } from '@nx/devkit';
 import { EventEmitter } from 'node:events';
 import { Readable } from 'node:stream';
 
-import { Args, runTool, Tool, UiOptions } from './tool-runner';
+import { Args, Tool, UiOptions } from '../types/tool-runner';
+import { runTool } from './tool-runner';
 
 jest.mock('@nx/devkit', () => ({
   logger: {

@@ -2,7 +2,6 @@
 import { logger } from '@nx/devkit';
 import { spawn } from 'node:child_process';
 import { createHash } from 'node:crypto';
-import EventEmitter from 'node:events';
 import { createReadStream } from 'node:fs';
 import { access, appendFile } from 'node:fs/promises';
 import { setTimeout } from 'node:timers/promises';
@@ -10,62 +9,8 @@ import { pathToFileURL } from 'node:url';
 import { promisify } from 'node:util';
 import type { Options as OraOptions } from 'ora';
 
+import { Args, Tool, UiOptions } from '../types/tool-runner';
 import { replace as envString } from './envsubst';
-
-export interface ToolOptions {
-  sampleInterval?: number;
-  detectPort?: boolean;
-  dest?: string;
-  debug?: boolean;
-  kernelTracing?: boolean;
-  name?: string;
-}
-
-export type Args = {
-  collectOnly?: boolean;
-  dest?: string;
-  debug?: boolean;
-  kernelTracing?: boolean;
-  name?: string;
-  onPort?: string;
-  open?: boolean;
-  sampleInterval?: string;
-  stopDelay?: string;
-  version?: boolean;
-  visualizeOnly?: string;
-  command: string[];
-};
-
-export type Color =
-  | 'black'
-  | 'red'
-  | 'green'
-  | 'yellow'
-  | 'blue'
-  | 'magenta'
-  | 'cyan'
-  | 'white'
-  | 'gray';
-
-export type UiOptions = {
-  color?: Color;
-};
-
-export interface ITool extends EventEmitter {
-  // eslint-disable-next-line @typescript-eslint/no-misused-new
-  // new(options?: ToolOptions): ITool;
-  collect(
-    command: string[],
-    callback: (err: Error | null, filepath: string) => void
-  ): void;
-  visualize(
-    data: string,
-    output: string,
-    callback: (err: Error | null) => void
-  ): void;
-}
-
-export type Tool = new (options: ToolOptions) => ITool;
 
 async function openUrl(target: string, options: { wait: boolean }) {
   const open = Function('return import("open")')() as Promise<
