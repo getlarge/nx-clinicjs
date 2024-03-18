@@ -1,4 +1,4 @@
-import ClinicDoctor from '@clinic/doctor';
+import ClinicFlame from '@clinic/flame';
 import { ExecutorContext } from '@nx/devkit';
 
 import {
@@ -6,10 +6,10 @@ import {
   retrieveFileToRunFromContext,
 } from '../../helpers/file-to-run';
 import { runTool } from '../../helpers/tool-runner';
-import { DoctorExecutorSchema } from './schema';
+import { FlameExecutorSchema } from './schema';
 
-export default async function doctor(
-  options: DoctorExecutorSchema,
+export default async function flame(
+  options: FlameExecutorSchema,
   context: ExecutorContext
 ) {
   process.env.NODE_ENV ??= context?.configurationName ?? 'development';
@@ -17,16 +17,16 @@ export default async function doctor(
   const fileToRun = retrieveFileToRunFromContext(context, options);
 
   await runTool(
-    'doctor',
-    ClinicDoctor,
+    'flame',
+    ClinicFlame,
     // eslint-disable-next-line @typescript-eslint/no-var-requires
-    require('@clinic/doctor/package.json').version,
+    require('@clinic/flame/package.json').version,
     {
       open: true,
       ...options,
       command: ['node', fileToRunCorrectPath(fileToRun)],
     },
-    { color: 'green' }
+    { color: 'red' }
   );
   return {
     success: true,

@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/schema",
+  "version": 2,
+  "title": "Flame executor",
+  "description": "Wrapper for the Clinic js Flame tool",
+  "type": "object",
+  "properties": {
+    "buildTarget": {
+      "type": "string",
+      "description": "The project's build target to run bubbleprof on",
+      "default": "build"
+    },
+    "detectPort": {
+      "type": "boolean",
+      "description": "If set to true, the executor will try to detect the port of the running server",
+      "default": false
+    },
+    "debug": {
+      "type": "boolean",
+      "description": "If set to true, the generated html will not be minified",
+      "default": false
+    },
+    "dest": {
+      "type": "string",
+      "description": "The folder where the collected data is stored",
+      "default": "."
+    },
+    "name": {
+      "type": "string",
+      "description": "The name to identify the collected data"
+    },
+    "visualizeOnly": {
+      "type": "string",
+      "description": "Path of the report to visualize"
+    },
+    "kernelTracing": {
+      "type": "boolean",
+      "description": "If set to true, the executor will use the kernel tracing feature. Only available on Linux. Requires root access.",
+      "default": false
+    }
+  },
+  "required": ["buildTarget"]
+}

@@ -9,6 +9,11 @@
       "implementation": "./src/executors/doctor/executor",
       "schema": "./src/executors/doctor/schema.json",
       "description": "clinicjs doctor executor"
+    },
+    "flame": {
+      "implementation": "./src/executors/flame/executor",
+      "schema": "./src/executors/flame/schema.json",
+      "description": "clinicjs flame executor"
     }
   }
 }
