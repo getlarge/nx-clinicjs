@@ -1,8 +1,8 @@
 {
   "$schema": "https://json-schema.org/schema",
   "version": 2,
-  "title": "Bubbleprof executor",
-  "description": "Wrapper for the Clinic js Bubbleprof tool",
+  "title": "Doctor executor",
+  "description": "Wrapper for the Clinic js Doctor tool",
   "type": "object",
   "properties": {
     "buildTarget": {
@@ -32,6 +32,16 @@
     "visualizeOnly": {
       "type": "string",
       "description": "Path of the report to visualize"
+    },
+    "collectDelay": {
+      "type": "number",
+      "description": "The time in ms to wait before starting to collect data",
+      "default": 0
+    },
+    "sampleInterval": {
+      "type": "number",
+      "description": "The time in ms between each sample",
+      "default": 10
     }
   },
   "required": ["buildTarget"]

@@ -12,12 +12,15 @@
   },
   "scripts": {},
   "dependencies": {
-    "@clinic/bubbleprof": "^10.0.0",
     "@nx/devkit": "18.0.8",
     "minimatch": "^9.0.3",
     "open": "^10.1.0",
     "ora": "^8.0.1",
     "tslib": "^2.3.0"
+  },
+  "peerDependencies": {
+    "@clinic/bubbleprof": "^10.0.0",
+    "@clinic/doctor": "^11.0.0"
   },
   "devDependencies": {
     "@nx/eslint": "18.0.8",
