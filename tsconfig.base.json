@@ -10,25 +10,14 @@
     "importHelpers": true,
     "target": "es2015",
     "module": "commonjs",
-    "lib": [
-      "es2020",
-      "dom"
-    ],
-    "typeRoots": [
-      "./node_modules/@types",
-      "types"
-    ],
-    "types": [
-      "node",
-      "bubbleprof"
-    ],
+    "lib": ["es2020", "dom"],
+    "typeRoots": ["./node_modules/@types", "types"],
+    "types": ["node", "bubbleprof"],
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@getlarge/nx-clinicjs": [
-        "src/index.ts"
-      ]
+      "@getlarge/nx-clinicjs": ["src/index.ts"]
     }
   },
   "files": [],

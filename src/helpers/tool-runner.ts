@@ -127,6 +127,9 @@ export async function runTool(
     stream: spinnerStream,
     color: uiOptions.color,
   });
+  // for some reason the spinner needs to be started to keep the process running when triggering SIGINT
+  //? onsigint is triggered too late?
+  spinner.start();
 
   function status(message: string) {
     if (spinnerIsEnabled) {
