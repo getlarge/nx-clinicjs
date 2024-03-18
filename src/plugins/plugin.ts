@@ -163,10 +163,14 @@ function getBubbleprofTargetConfiguration(
   const baseConfig = getBaseTargetConfiguration(projectRoot, options, context);
   const isRootProject = projectRoot === '.';
   const defaultDest = isRootProject ? '.clinic/.' : `.clinic/${projectRoot}/.`;
+  const outputs = [
+    '{options.dest}/{options.name}.clinic-bubbleprof',
+    '{options.dest}/{options.name}.clinic-bubbleprof.html',
+  ];
   return {
     ...baseConfig,
     executor: '@getlarge/nx-clinicjs:bubbleprof',
-    outputs: ['{options.dest}/{options.name}.clinic-bubbleprof'],
+    outputs,
     options: {
       dest: defaultDest,
       name: options.bubbleprofTargetName,
