@@ -57,7 +57,7 @@ describe('@getlarge/clinicjs', () => {
             'default',
             '^production',
             {
-              externalDependencies: ['@clinic/*'],
+              externalDependencies: ['@clinic/bubbleprof'],
             },
           ],
           options: {

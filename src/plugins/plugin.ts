@@ -134,7 +134,7 @@ function getInputs(
     ...(namedInputs && 'production' in namedInputs
       ? ['default', '^production']
       : ['default', '^default']),
-    { externalDependencies: ['@clinic/*'] },
+    { externalDependencies: ['@clinic/bubbleprof'] },
   ];
 }
 
@@ -166,7 +166,7 @@ function getBubbleprofTargetConfiguration(
   return {
     ...baseConfig,
     executor: '@getlarge/nx-clinicjs:bubbleprof',
-    outputs: ['{options.dest}'],
+    outputs: ['{options.dest}/{options.name}.clinic-bubbleprof'],
     options: {
       dest: defaultDest,
       name: options.bubbleprofTargetName,
