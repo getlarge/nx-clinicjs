@@ -18,13 +18,9 @@ import { getGlobPatternsFromPackageManagerWorkspaces } from 'nx/src/plugins/pack
 import { projectGraphCacheDirectory } from 'nx/src/utils/cache-directory';
 import { combineGlobPatterns } from 'nx/src/utils/globs';
 
-type BaseClinicOptions = {
-  collectOnly?: boolean;
-  vizualizeOnly?: string;
-  dest?: string;
-  debug?: boolean;
-  name?: string;
-};
+import { BaseExecutorSchema } from '../types/schema';
+
+type BaseClinicOptions = Omit<BaseExecutorSchema, 'buildTarget'>;
 /**
  * clinic config should be in the root of the project and contain a key for each tool
  * with the options for that tool
@@ -43,7 +39,7 @@ export interface ClinicConfig {
   doctor: BaseClinicOptions;
   flame: BaseClinicOptions;
   bubbleprof: BaseClinicOptions;
-  heap: BaseClinicOptions;
+  heapProfiler: BaseClinicOptions;
 }
 
 export interface ClinicJsPluginOptions {
@@ -51,7 +47,7 @@ export interface ClinicJsPluginOptions {
   doctorTargetName: string;
   flameTargetName: string;
   bubbleprofTargetName: string;
-  heapTargetName: string;
+  heapProfilerTargetName: string;
 }
 
 const cachePath = join(projectGraphCacheDirectory, 'clinic.hash');
@@ -134,7 +130,14 @@ function getInputs(
     ...(namedInputs && 'production' in namedInputs
       ? ['default', '^production']
       : ['default', '^default']),
-    { externalDependencies: ['@clinic/bubbleprof'] },
+    {
+      externalDependencies: [
+        '@clinic/bubbleprof',
+        '@clinic/doctor',
+        '@clinic/flame',
+        '@clinic/heap-profiler',
+      ],
+    },
   ];
 }
 
@@ -144,9 +147,12 @@ function getBaseTargetConfiguration(
   context: CreateNodesContext
 ): TargetConfiguration {
   const namedInputs = getNamedInputs(projectRoot, context);
+  const isRootProject = projectRoot === '.';
+  const defaultDest = isRootProject ? '.clinic/.' : `.clinic/${projectRoot}/.`;
   return {
     options: {
       buildTarget: pluginOptions.buildTarget,
+      dest: defaultDest,
     },
     cache: true,
     dependsOn: [`^${pluginOptions.buildTarget}`],
@@ -155,27 +161,81 @@ function getBaseTargetConfiguration(
 }
 
 function getBubbleprofTargetConfiguration(
-  projectRoot: string,
   options: ClinicJsPluginOptions,
   clinicConfig: ClinicConfig,
-  context: CreateNodesContext
+  baseConfig: TargetConfiguration
 ): TargetConfiguration {
-  const baseConfig = getBaseTargetConfiguration(projectRoot, options, context);
-  const isRootProject = projectRoot === '.';
-  const defaultDest = isRootProject ? '.clinic/.' : `.clinic/${projectRoot}/.`;
-  const outputs = [
-    '{options.dest}/{options.name}.clinic-bubbleprof',
-    '{options.dest}/{options.name}.clinic-bubbleprof.html',
-  ];
   return {
     ...baseConfig,
     executor: '@getlarge/nx-clinicjs:bubbleprof',
-    outputs,
+    outputs: [
+      '{options.dest}/{options.name}.clinic-bubbleprof',
+      '{options.dest}/{options.name}.clinic-bubbleprof.html',
+    ],
     options: {
-      dest: defaultDest,
       name: options.bubbleprofTargetName,
       ...baseConfig.options,
       ...(clinicConfig.bubbleprof ?? {}),
+    },
+  };
+}
+
+function getDoctorTargetConfiguration(
+  options: ClinicJsPluginOptions,
+  clinicConfig: ClinicConfig,
+  baseConfig: TargetConfiguration
+): TargetConfiguration {
+  return {
+    ...baseConfig,
+    executor: '@getlarge/nx-clinicjs:doctor',
+    outputs: [
+      '{options.dest}/{options.name}.clinic-doctor',
+      '{options.dest}/{options.name}.clinic-doctor.html',
+    ],
+    options: {
+      name: options.doctorTargetName,
+      ...baseConfig.options,
+      ...(clinicConfig.doctor ?? {}),
+    },
+  };
+}
+
+function getFlameTargetConfiguration(
+  options: ClinicJsPluginOptions,
+  clinicConfig: ClinicConfig,
+  baseConfig: TargetConfiguration
+): TargetConfiguration {
+  return {
+    ...baseConfig,
+    executor: '@getlarge/nx-clinicjs:flame',
+    outputs: [
+      '{options.dest}/{options.name}.clinic-flame',
+      '{options.dest}/{options.name}.clinic-flame.html',
+    ],
+    options: {
+      name: options.flameTargetName,
+      ...baseConfig.options,
+      ...(clinicConfig.flame ?? {}),
+    },
+  };
+}
+
+function getHeapProfilerTargetConfiguration(
+  options: ClinicJsPluginOptions,
+  clinicConfig: ClinicConfig,
+  baseConfig: TargetConfiguration
+): TargetConfiguration {
+  return {
+    ...baseConfig,
+    executor: '@getlarge/nx-clinicjs:heap-profiler',
+    outputs: [
+      '{options.dest}/{options.name}.clinic-heapprofiler',
+      '{options.dest}/{options.name}.clinic-heapprofiler.html',
+    ],
+    options: {
+      name: options.heapProfilerTargetName,
+      ...baseConfig.options,
+      ...(clinicConfig.heapProfiler ?? {}),
     },
   };
 }
@@ -191,12 +251,28 @@ function buildClinicJsTargets(
     configFilePath
   );
   const clinicConfig = readJsonFile(absoluteConfigFilePath) as ClinicConfig;
+  const baseConfig = getBaseTargetConfiguration(projectRoot, options, context);
+
   const targets: Record<string, TargetConfiguration> = {};
   targets[options.bubbleprofTargetName] = getBubbleprofTargetConfiguration(
-    projectRoot,
     options,
     clinicConfig,
-    context
+    baseConfig
+  );
+  targets[options.doctorTargetName] = getDoctorTargetConfiguration(
+    options,
+    clinicConfig,
+    baseConfig
+  );
+  targets[options.flameTargetName] = getFlameTargetConfiguration(
+    options,
+    clinicConfig,
+    baseConfig
+  );
+  targets[options.heapProfilerTargetName] = getHeapProfilerTargetConfiguration(
+    options,
+    clinicConfig,
+    baseConfig
   );
   return targets;
 }
@@ -208,7 +284,7 @@ function normalizeOptions(
     doctorTargetName: options.doctorTargetName ?? 'doctor',
     flameTargetName: options.flameTargetName ?? 'flame',
     bubbleprofTargetName: options.bubbleprofTargetName ?? 'bubbleprof',
-    heapTargetName: options.heapTargetName ?? 'heap',
+    heapProfilerTargetName: options.heapProfilerTargetName ?? 'heap-profiler',
     buildTarget: options.buildTarget ?? 'build',
   };
 }
