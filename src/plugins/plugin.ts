@@ -155,7 +155,7 @@ function getBaseTargetConfiguration(
       dest: defaultDest,
     },
     cache: true,
-    dependsOn: [`^${pluginOptions.buildTarget}`],
+    dependsOn: [pluginOptions.buildTarget, `^${pluginOptions.buildTarget}`],
     inputs: getInputs(namedInputs),
   };
 }
